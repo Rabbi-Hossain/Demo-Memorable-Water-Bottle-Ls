@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Bottale from "../Bottale/Bottale";
 import './Bottales.css'
-import { addToLS, getStoredCart, removeFromLS } from "../../utilites/localstorage";
 import Cart from "../Cart/Cart";
+import { addToLS, getStoreCart, removeFromLS } from "../../utilites/localstorge";
 
 const Bottales = () => {
 
@@ -17,31 +17,25 @@ const Bottales = () => {
             .then(data => setBottales(data))
     }, [])
 
-    // useEffect(() => {
-    //     console.log('called the useeffect', bottales.length)
-    //     if (bottales.length) {
-    //         const storedCart = getStoredCart()
-    //         console.log(storedCart, bottales)
-    //     }
-    // }, [bottales])
 
-
-    useEffect(() => {
+    useEffect(()=>{
         console.log('called the useeffect', bottales.length)
-        if (bottales.length) {
-            const stordCart = getStoredCart()
-            console.log(stordCart,bottales)
-            const saveCart = []
-            for(const id of stordCart){
-                const bottle = bottales.find(bottal=>bottal.id  == id)
-                if(bottle){
-                    saveCart.push(bottle)
-                }
+       if(bottales.length){
+        const storCart = getStoreCart()
+        console.log(storCart, bottales)
+        const saveCart = []
+        for(const id of storCart){
+            console.log(id)
+            const bottle = bottales.find(bottle=> bottle.id == id)
+            if(bottle){
+                saveCart.push(bottle)
             }
-            console.log('this is savecart',bottales)
-            setCart(saveCart)
         }
-    }, [bottales])
+        console.log('savecart', saveCart)
+        setCart(saveCart)
+       }
+    },[bottales])
+    
 
     const handlePurches = (bottale) => {
         const newCart = [...cart, bottale]
@@ -49,11 +43,9 @@ const Bottales = () => {
         addToLS(bottale.id)
     }
 
-    const removeFromHandler = (id) =>{
-        const remaining = cart.filter(bottle =>bottle.id !== id)
+    const removeHandlerLs = id =>{
+        const remaining = cart.filter(bottle=>bottle.id !== id)
         setCart(remaining)
-
-
         removeFromLS(id)
     }
 
@@ -61,7 +53,7 @@ const Bottales = () => {
     return (
         <div>
             <h3>Bottales:{bottales.length}</h3>
-            <Cart cart={cart} removeFromHandler={removeFromHandler}></Cart>
+            <Cart cart={cart} removeHandlerLs={removeHandlerLs}></Cart>
             
             <div className="bottales-container">
                 {
